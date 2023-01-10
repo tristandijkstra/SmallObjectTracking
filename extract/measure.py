@@ -5,6 +5,17 @@ import time
 from warnings import warn
 from typing import Tuple
 
+generateErrorsLabels = [
+    "errorX",
+    "errorY",
+    "errorZ",
+    "errorCross",
+    "errorAlong",
+    "errorRadial",
+    "overallCovariance",
+    "overallVelocityCovariance",
+]
+
 
 def generateErrors(
     TLE_LINE1: str, TLE_LINE2: str, TLE_LINE1min1: str, TLE_LINE2min1: str
@@ -38,14 +49,31 @@ def generateErrors(
 
     else:
         positionError = np.array(r) - np.array(rmin1)
-        # velocityError = np.array(v) - np.array(vmin1)
-        positionOverallCovariance = np.sqrt(np.sum(np.square(positionError)))
+        velocityError = np.array(v) - np.array(vmin1)
+
+        rcrossv = np.cross(r, v)
+        n_temp = rcrossv / np.linalg.norm(rcrossv)
+
+        ncrossr = np.cross(n_temp, r)
+        t_temp = ncrossr / np.linalg.norm(ncrossr)
+        r_temp = r / np.linalg.norm(r)
+
+        transformMatrix = np.array([n_temp, t_temp, r_temp])
+        ntrVec = transformMatrix @ positionError
+
+        positionOverallCovariance = np.linalg.norm(positionError)
+        velocityOverallCovariance = np.linalg.norm(velocityError)
+        crossT, alongT, radial = ntrVec
 
         return (
             positionError[0],
             positionError[1],
             positionError[2],
+            crossT,
+            alongT,
+            radial,
             positionOverallCovariance,
+            velocityOverallCovariance,
         )
 
 
@@ -67,9 +95,12 @@ if __name__ == "__main__":
     # tests
     TLE_LINE1 = "1 39416U 13066A   16002.76110523 +.00000398 +00000-0 +54149-4 0  9990"
     TLE_LINE2 = "2 39416 097.7110 067.5703 0041210 195.3492 164.6476 14.83425137114401"
-    TLE_LINE1min1 = "1 39416U 13066A   16001.81675900  .00000428  00000-0  57846-4 0  9991"
-    TLE_LINE2min1 = "2 39416  97.7111  66.6585 0041130 198.4629 161.5095 14.83424384114290"
-
+    TLE_LINE1min1 = (
+        "1 39416U 13066A   16001.81675900  .00000428  00000-0  57846-4 0  9991"
+    )
+    TLE_LINE2min1 = (
+        "2 39416  97.7111  66.6585 0041130 198.4629 161.5095 14.83424384114290"
+    )
 
     errorsTest = generateErrors(TLE_LINE1, TLE_LINE2, TLE_LINE1min1, TLE_LINE2min1)
     # (0.016149681323440745, 0.055385587249475066, 0.02879765662344574, 0.06448007838720261)

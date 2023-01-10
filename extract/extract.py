@@ -151,7 +151,7 @@ def querySpacetrack(
             # Add errors
             # NOTE yes this is a nasty apply
             # NOTE this can be improved, it has been left, so because of time constraints
-            P[["errorX", "errorY", "errorZ", "overallCovariance"]] = P.apply(
+            P[measure.generateErrorsLabels] = P.apply(
                 lambda x: measure.generateErrors(
                     x.TLE_LINE1, x.TLE_LINE2, x.TLE_LINE1min1, x.TLE_LINE2min1
                 ),
@@ -436,7 +436,7 @@ def getTLEsFromLaunches(
 
     if collectAllTLEs:
         # combine all TLE dataframes into one dataframe
-        launchesTLEDataFrame = pd.concat(list(launchesTLEDict.values())).reset_index( # type: ignore
+        launchesTLEDataFrame = pd.concat(list(launchesTLEDict.values())).reset_index(  # type: ignore
             drop=True
         )
         return discosDataDict, launchesTLEDataFrame
