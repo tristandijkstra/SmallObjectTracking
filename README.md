@@ -6,7 +6,7 @@ Space Debris Radar Tracking Capabilities assessment | Microsat Engineering proje
 from extract.extract import getTLEsFromLaunches, getCredentials
 from datetime import datetime
 
-start = datetime(2016, 1, 1)
+start = datetime(2022, 1, 1)
 end = datetime(2023, 1, 1)
 
 token = getCredentials(source="discos")
