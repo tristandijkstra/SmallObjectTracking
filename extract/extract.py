@@ -186,6 +186,7 @@ def querySpacetrackMultiple(
     forceRegen: bool = False,
     verbose: bool = False,
     description: Union[str, None] = None,
+    ignoreList: list = []
 ) -> dict:
     """Query spacetrack for the TLE data of MULTIPLE NORAD ids over a specific period of time.
     Generate and save the data if it has not been generated already, then return this data in a dataframe.
@@ -200,6 +201,8 @@ def querySpacetrackMultiple(
         saveFolder (str, optional): location to save the csv. Defaults to "data".
         forceRegen (bool, optional): force a regen of the data, even if the data had previously been cached. Defaults to False.
         verbose (bool, optional): print out extra information on the process. Defaults to True.
+        ignoreList (list, optional): list of norads to ignore. Defaults to "[]".
+
 
     Raises:
         ValueError: GET request failed for spacetrack
@@ -212,6 +215,9 @@ def querySpacetrackMultiple(
     TLEdict = {}
 
     errorNORADS = []
+
+    # ignore these norads
+    NORADidList = [n for n in NORADidList if n not in ignoreList]
 
     for NORADid in tqdm(NORADidList, desc=description):
         # Retrieve and store TLE Data
@@ -235,6 +241,7 @@ def querySpacetrackMultiple(
 
     if len(errorNORADS) > 0:
         print(f"Total failed: {len(errorNORADS)} -> {errorNORADS}")
+        print("Consider adding these to the ignore list if this happens again")
 
     return TLEdict
 
@@ -360,6 +367,7 @@ def getTLEsFromLaunches(
     forceRegen: bool = False,
     verbose: bool = False,
     saveFolder="data",
+    ignoreList:list = []
 ) -> Union[
     Tuple[Dict[str, pd.DataFrame], Dict[int, pd.DataFrame]],
     Tuple[Dict[str, pd.DataFrame], Dict[str, Dict[int, pd.DataFrame]]],
@@ -383,6 +391,7 @@ def getTLEsFromLaunches(
         forceRegen (bool, optional): force a regen of the data, even if the data had previously been cached. Defaults to False.
         verbose (bool, optional): print out extra information on the process. Defaults to False.
         saveFolder (str, optional): location to save the csv. Defaults to "data".
+        ignoreList (list, optional): list of norads to ignore. Defaults to "[]".
 
     Returns:
         collectLaunches enabled (default):
@@ -436,6 +445,7 @@ def getTLEsFromLaunches(
             forceRegen=forceRegen,
             verbose=verbose,
             description=f"Launch: {launchID}",
+            ignoreList=ignoreList
         )
 
         if combineDiscosAndTLE:
