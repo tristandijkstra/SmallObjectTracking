@@ -286,9 +286,9 @@ def queryDiscosWeb(
 
             if result.status_code == 200:
                 result_dict = result.json()
-                for object_ in result_dict['data']:
+                for object_ in result_dict["data"]:
                     objects.append(object_)
-                if current_page < result_dict['meta']['pagination']['totalPages']:
+                if current_page < result_dict["meta"]["pagination"]["totalPages"]:
                     current_page += 1
                 else:
                     break
@@ -316,6 +316,7 @@ def queryDiscosWeb(
         satnumber = list(P.satno.values)  # type: ignore
         return P, satnumber
 
+
 def queryDiscosWebMultiple(
     token: str,
     launchIDs: list,
@@ -338,7 +339,7 @@ def queryDiscosWebMultiple(
 
     for launchID in tqdm(launchIDs, desc="DiscosWeb"):
         P, noradsList = queryDiscosWeb(
-            token, launchID, saveFolder, forceRegen, verbose=False
+            token, launchID, saveFolder, forceRegen, verbose=verbose
         )
         dataFrameDict[launchID] = P
         noradsListDict[launchID] = noradsList
@@ -406,6 +407,17 @@ def getTLEsFromLaunches(
         verbose=verbose,
         saveFolder=f"{saveFolder}/discosweb",
     )
+
+    totalObjects = sum([len(nrdLst) for nrdLst in list(noradsDict.values())])
+
+    apiWarningText = "More than 300 objects will be retrieved, \
+                       this exceeds the API hour limit of SpaceTrack,\
+                       try fewer launches/objects"
+    assert totalObjects < 301, apiWarningText
+
+    if verbose:
+        print(f"Retrieving data for {totalObjects} objects.")
+
     launchesTLEDict: Union[dict, Dict[str, dict]] = {}
 
     for launchID in launchIDs:
