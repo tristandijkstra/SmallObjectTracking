@@ -246,7 +246,7 @@ def queryDiscosWeb(
     forceRegen: bool = False,
     verbose: bool = True,
 ) -> Tuple[pd.DataFrame, list]:
-    """retreives a dic of list of launch items in a launch id for one id and a list of norad id
+    """retrieves a dic of list of launch items in a launch id for one id and a list of norad id
 
     Args:
         token (str): personal token for taken from getCredentials()
@@ -268,22 +268,35 @@ def queryDiscosWeb(
         URL = "https://discosweb.esoc.esa.int"
         token = f"{token}"
 
-        response = requests.get(
-            f"{URL}/api/objects",
-            headers={
-                "Authorization": f"Bearer {token}",
-                "DiscosWeb-Api-Version": "2",
-            },
-            params={
-                "filter": f"eq(launch.cosparLaunchNo,'{launchID}')",
-                "sort": "satno",
-            },
-        )
+        objects = []
+        current_page = 1
+        while True:
+            result = requests.get(
+                f"{URL}/api/objects",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "DiscosWeb-Api-Version": "2",
+                },
+                params={
+                    "filter": f"eq(objectClass,Payload)&eq(launch.cosparLaunchNo,'{launchID}')&ge(satno,1)",
+                    "page[number]": current_page,
+                    "sort": "satno",
+                },
+            )
 
-        doc = response.json()
+            if result.status_code == 200:
+                result_dict = result.json()
+                for object_ in result_dict['data']:
+                    objects.append(object_)
+                if current_page < result_dict['meta']['pagination']['totalPages']:
+                    current_page += 1
+                else:
+                    break
+            else:
+                result.raise_for_status()
 
         b = []  # extracting data
-        for u in doc["data"]:
+        for u in objects:
             b.append(u["attributes"])
 
         # makes a dictonary of data
@@ -297,12 +310,11 @@ def queryDiscosWeb(
 
     else:
         if verbose:
-            print(f"DiscosWeb for launch: {launchID} already retrieved")
+            print(f"DiscosWeb for launch: {launchID} already retrieved.")
 
         P = pd.read_csv(saveFilePath, index_col=0)
         satnumber = list(P.satno.values)  # type: ignore
         return P, satnumber
-
 
 def queryDiscosWebMultiple(
     token: str,
