@@ -311,6 +311,35 @@ def queryDiscosWeb(
         # extracts satno coloumn
         satnumber = list(P.satno.values)
 
+        # add antenna, pannels, rods here
+        P = (
+            P.assign(
+                antennas=lambda x: x["shape"]
+                .str.extract("((?<=\+ ).(?= Ant))")
+                .fillna(0)
+                .astype(int)
+            )
+            .assign(
+                pannels=lambda x: x["shape"]
+                .str.extract("((?<=\+ ).(?= Pan))")
+                .fillna(0)
+                .astype(int)
+            )
+            .assign(
+                rods=lambda x: x["shape"]
+                .str.extract("((?<=\+ ).(?= Rod))")
+                .fillna(0)
+                .astype(int)
+            )
+            # .assign(
+            #     dishes=lambda x: x["shape"]
+            #     .str.extract("((?<=\+ ).(?= Dish))")
+            #     .fillna(0)
+            #     .astype(int)
+            # )
+            .assign(volume= lambda x: x.height * x.width * x.depth)
+        )
+
         P.to_csv(saveFilePath)
 
         return P, satnumber

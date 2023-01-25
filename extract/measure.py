@@ -14,6 +14,12 @@ generateErrorsLabels = [
     "errorRadial",
     "overallCovariance",
     "overallVelocityCovariance",
+    "simX",
+    "simY",
+    "simZ",
+    "actualX",
+    "actualY",
+    "actualZ",
 ]
 
 
@@ -74,6 +80,12 @@ def generateErrors(
             radial,
             positionOverallCovariance,
             velocityOverallCovariance,
+            rmin1[0],
+            rmin1[1],
+            rmin1[2],
+            r[0],
+            r[1],
+            r[2],
         )
 
 
