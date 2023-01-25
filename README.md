@@ -1,7 +1,7 @@
 # Small Space Object Tracking
 Space Debris Radar Tracking Capabilities assessment | Microsat Engineering project
-## Original Repository.
-The core functioning of this software was developed in collaboration with other 
+## Original Work
+The core functioning of this software was developed in collaboration with another team. The original repository can be found here: https://github.com/tristandijkstra/SpaceDebrisTracking
 
 ## Setup
 The tool requires spacetrack log in credentials obtained from https://www.space-track.org/.
@@ -43,10 +43,13 @@ pip install requirements.txt
 
 ## Features
 ![Functions Flow chart](docs/functionFlowChart.png)
-The package's main functions are shown above. Dashed functions cache the data they collect for faster successive retrieval. Each of the functions contain extensive docstring documentation that details their functioning. Notably, the getTLEsFromLaunches() function allows the user to select many different output methods, some are listed in the example section below. While all functions can be used standalone, the some functioning is only found in getTLEsFromLaunches().
+The package's main functions are shown above. Dashed functions cache the data they collect for faster successive retrieval. Each of the functions contain extensive docstring documentation that details their functioning. Notably, the getTLEsFromLaunches() function allows the user to select many different output methods, some are listed in the example section below. While all functions can be used standalone and have been programmed in the same style, some functioning is only found in getTLEsFromLaunches().
 
 The project's report contains information about the data retrieved.
-## Example
+## Usage
+An extensive example can be found in TODO.ipynb
+
+TODO UPDATE THIS TO LOOK BETTER
 ```py
 from extract.extract import getTLEsFromLaunches, getCredentials
 from datetime import datetime
