@@ -47,9 +47,9 @@ The package's main functions are shown above. Dashed functions cache the data th
 
 The project's report contains information about the data retrieved.
 ## Usage
-An extensive example can be found in TODO.ipynb
+Exstensive usage can be found in graphs.ipynb, momographs.ipynb and example.ipynb
 
-TODO UPDATE THIS TO LOOK BETTER
+A basic usage example is shown below:
 ```py
 from extract.extract import getTLEsFromLaunches, getCredentials
 from datetime import datetime
