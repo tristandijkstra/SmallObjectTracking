@@ -1,5 +1,11 @@
 # Small Space Object Tracking
 Space Debris Radar Tracking Capabilities assessment | Microsat Engineering project
+
+## Important notebooks
+Files relevant to the analysis section is found in graphs.ipynb and momographs.ipynb. 
+
+An additional Gradient Boosting and Random Forest test was done in basicML.ipynb. This direction was ultimately not pursued in the final report.
+
 ## Original Work
 The core functioning of this software was developed in collaboration with another team. The original repository can be found here: https://github.com/tristandijkstra/SpaceDebrisTracking
 
